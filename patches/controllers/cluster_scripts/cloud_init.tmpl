@@ -1,0 +1,18 @@
+#cloud-config
+users:
+  - name: root
+    lock_passwd: false
+write_files:
+- path: /etc/vcloud/metering
+  owner: root
+  content: |
+    VCD_SITE_ID={{ .VcdHostFormatted }}
+    CLUSTER_ID={{ .ClusterID }}
+    TKG_VERSION={{ .TKGVersion }}
+    MACHINE_TYPE={{- if or .ControlPlane .ResizedControlPlane -}} control_plane {{- else -}} worker {{- end }}
+    MGMT=true
+timezone: UTC
+disable_root: false
+preserve_hostname: false
+hostname: "{{ .MachineName }}"
+final_message: "The system is ready after $UPTIME seconds"
